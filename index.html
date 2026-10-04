@@ -237,7 +237,6 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
 
     const lastDay = new Date(year, monthIndexZeroBased + 1, 0).getDate();
 
-    // Skapa en container för veckor
     let weekRow = document.createElement("div");
     weekRow.classList.add("calendar-week");
 
@@ -272,7 +271,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
 
         weekRow.appendChild(div);
 
-        // Om söndag → ny rad
+        // Ny rad efter söndag
         if ((startWeekday + d) % 7 === 6) {
             calendar.appendChild(weekRow);
             weekRow = document.createElement("div");
@@ -280,13 +279,10 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
         }
     }
 
-    // Lägg sista raden om den inte är tom
     if (weekRow.children.length > 0) {
         calendar.appendChild(weekRow);
     }
 }
-
-
 
 // ===============================
 // 7. Månadsväxling
