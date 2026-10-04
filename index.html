@@ -212,8 +212,15 @@ let blockeradeDagar = [];
 
 fetch('blockerade.json')
     .then(r => r.json())
-    .then(data => blockeradeDagar = data.blockerade || [])
-    .catch(() => console.warn("Kunde inte läsa blockerade.json"));
+    .then(data => {
+        blockeradeDagar = data.blockerade || [];
+        startaKalendrar(); // <-- RITA KALENDRARNA EFTER ATT FILEN ÄR LÄST
+    })
+    .catch(() => {
+        console.warn("Kunde inte läsa blockerade.json");
+        startaKalendrar(); // <-- Rita ändå
+    });
+
 
 
 
