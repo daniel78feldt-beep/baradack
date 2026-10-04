@@ -152,9 +152,9 @@
     <p>© 2026 Bara Däck</p>
 </footer>
 <script>
-// Blockerade dagar (lägg in dina egna)
+// Blockerade dagar
 const blockeradeDagar = [
-    "2026-10-04",
+     "2026-10-04",
     "2026-10-05",
     "2026-10-06",
     "2026-10-07",
@@ -166,17 +166,9 @@ const blockeradeDagar = [
 const lamning = document.querySelector('input[name="lamning"]');
 const hamtning = document.querySelector('input[name="hamtning"]');
 
-// Förhindra samma dag
-hamtning.addEventListener('change', () => {
-    if (hamtning.value === lamning.value) {
-        alert("Hämtning kan inte vara samma dag som lämning.");
-        hamtning.value = "";
-    }
-});
-
 // Bygg kalender
-function skapaKalender(year, month) {
-    const calendar = document.getElementById("calendar");
+function skapaKalender(elementId, year, month, onSelect, minDate = null) {
+    const calendar = document.getElementById(elementId);
     calendar.innerHTML = "";
 
     const firstDay = new Date(year, month, 1);
@@ -195,26 +187,42 @@ function skapaKalender(year, month) {
             div.classList.add("blocked");
         }
 
-        // Klick på dag
+        // Blockera dagar före minDate (för hämtning)
+        if (minDate && iso <= minDate) {
+            div.classList.add("blocked");
+        }
+
+        // Klick
         div.addEventListener("click", () => {
             if (div.classList.contains("blocked")) return;
 
             // Markera vald dag
-            document.querySelectorAll(".calendar-day").forEach(el => el.classList.remove("selected"));
+            calendar.querySelectorAll(".calendar-day").forEach(el => el.classList.remove("selected"));
             div.classList.add("selected");
 
-            // Sätt datum i rätt fält
-            lamning.value = iso;
+            onSelect(iso);
         });
 
         calendar.appendChild(div);
     }
 }
 
-// Starta kalendern för aktuell månad
+// Starta lämning
 const idag = new Date();
-skapaKalender(idag.getFullYear(), idag.getMonth());
+skapaKalender("calendar-lamning", idag.getFullYear(), idag.getMonth(), (iso) => {
+    lamning.value = iso;
+
+    // När lämning är vald → bygg hämtning
+    skapaKalender("calendar-hamtning", idag.getFullYear(), idag.getMonth(), (iso2) => {
+        if (iso2 === iso) {
+            alert("Hämtning kan inte vara samma dag som lämning.");
+            return;
+        }
+        hamtning.value = iso2;
+    }, iso);
+});
 </script>
+
 
 
 </body>
