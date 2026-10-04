@@ -159,41 +159,27 @@
 </footer>
 <script>
 // ===============================
-// 1. LEDTID (hämtas från fil)
+// 1. Globala variabler
 // ===============================
 let ledtid = 1;
 let blockeradeDagar = [];
 
-Promise.all([
-    fetch('ledtid.json').then(r => r.json()).catch(() => ({ ledtid: 1 })),
-    fetch('blockerade.json').then(r => r.json()).catch(() => ({ blockerade: [] }))
-]).then(([ledtidData, blockeradeData]) => {
-
-    ledtid = Number(ledtidData.ledtid) || 1;
-    blockeradeDagar = blockeradeData.blockerade || [];
-
-    startaKalendrar(); // <-- SUPER VIKTIGT
-});
-
-
-
-// ===============================
-// 2. Datumfält
-// ===============================
 const lamning = document.querySelector('input[name="lamning"]');
 const hamtning = document.querySelector('input[name="hamtning"]');
 
+const idag = new Date();
+const idagISO = makeISO(idag.getFullYear(), idag.getMonth(), idag.getDate());
 
 // ===============================
-// 3. Hjälpfunktioner
+// 2. Hjälpfunktioner
 // ===============================
 function makeISO(y, m0, d) {
-    return `${y}-${String(m0+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    return `${y}-${String(m0 + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
 function addDays(iso, days) {
-    const [y,m,d] = iso.split('-').map(Number);
-    const dt = new Date(y, m-1, d + days);
+    const [y, m, d] = iso.split("-").map(Number);
+    const dt = new Date(y, m - 1, d + days);
     return makeISO(dt.getFullYear(), dt.getMonth(), dt.getDate());
 }
 
@@ -202,39 +188,37 @@ function monthName(y, m0) {
     return `${names[m0]} ${y}`;
 }
 
+// ===============================
+// 3. Läs JSON (ledtid + blockerade)
+// ===============================
+Promise.all([
+    fetch("ledtid.json").then(r => r.json()).catch(() => ({ ledtid: 1 })),
+    fetch("blockerade.json").then(r => r.json()).catch(() => ({ blockerade: [] }))
+]).then(([ledtidData, blockeradeData]) => {
+    ledtid = Number(ledtidData.ledtid) || 1;
+    blockeradeDagar = blockeradeData.blockerade || [];
+
+    lamning.min = idagISO;
+    hamtning.min = idagISO;
+
+    startaKalendrar();
+});
 
 // ===============================
-// 4. Dagens datum
-// ===============================
-const idag = new Date();
-const idagISO = makeISO(idag.getFullYear(), idag.getMonth(), idag.getDate());
-
-lamning.min = idagISO;
-hamtning.min = idagISO;
-
-
-
-
-
-
-
-// ===============================
-// 6. Kalenderbyggare
+// 4. Riktig veckokalender (mån–sön)
 // ===============================
 function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate = null) {
     const calendar = document.getElementById(elementId);
     calendar.innerHTML = "";
 
     const firstDay = new Date(year, monthIndexZeroBased, 1);
-    const startWeekday = (firstDay.getDay() + 6) % 7; 
-    // Gör måndag = 0, tisdag = 1 ... söndag = 6
-
+    const startWeekday = (firstDay.getDay() + 6) % 7; // måndag=0 ... söndag=6
     const lastDay = new Date(year, monthIndexZeroBased + 1, 0).getDate();
 
     let weekRow = document.createElement("div");
     weekRow.classList.add("calendar-week");
 
-    // Tomma rutor före dag 1
+    // tomma rutor före dag 1
     for (let i = 0; i < startWeekday; i++) {
         const empty = document.createElement("div");
         empty.classList.add("calendar-empty");
@@ -247,7 +231,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
         div.classList.add("calendar-day");
         div.textContent = d;
 
-        // Blockeringar
+        // blockeringar
         if (iso <= idagISO) div.classList.add("blocked");
         if (blockeradeDagar.includes(iso)) div.classList.add("blocked");
 
@@ -265,7 +249,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
 
         weekRow.appendChild(div);
 
-        // Ny rad efter söndag
+        // ny rad efter söndag
         if ((startWeekday + d) % 7 === 6) {
             calendar.appendChild(weekRow);
             weekRow = document.createElement("div");
@@ -279,92 +263,74 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
 }
 
 // ===============================
-// 7. Månadsväxling
+// 5. Månadsväxling + lämning/hämtning
 // ===============================
-function initMonthNav(prefix, onSelect, minDateGetter) {
-    let year = idag.getFullYear();
-    let month = idag.getMonth();
+let lamYear = idag.getFullYear();
+let lamMonth = idag.getMonth();
+let hamYear = idag.getFullYear();
+let hamMonth = idag.getMonth();
 
-    function render() {
-        document.getElementById(`${prefix}-title`).textContent = monthName(year, month);
+function renderLamning() {
+    document.getElementById("calendar-lamning-title").textContent = monthName(lamYear, lamMonth);
 
-        skapaKalender(prefix, year, month, iso => {
-            onSelect(iso);
+    skapaKalender("calendar-lamning", lamYear, lamMonth, iso => {
+        lamning.value = iso;
 
-            // Endast lämning ska trigga hämtningens startmånad
-            if (prefix === "calendar-lamning") {
-                const d = new Date(iso);
-                const y2 = d.getFullYear();
-                const m2 = d.getMonth();
-
-                // Uppdatera hämtningens interna månadstillstånd
-                hamtningYear = y2;
-                hamtningMonth = m2;
-
-                renderHamtning(); // rendera hämtning direkt
-            }
-        }, minDateGetter ? minDateGetter() : null);
-    }
-
-    document.getElementById(`${prefix}-prev`).onclick = () => {
-        month--;
-        if (month < 0) { month = 11; year--; }
-        render();
-    };
-
-    document.getElementById(`${prefix}-next`).onclick = () => {
-        month++;
-        if (month > 11) { month = 0; year++; }
-        render();
-    };
-
-    render();
+        const d = new Date(iso);
+        hamYear = d.getFullYear();
+        hamMonth = d.getMonth();
+        renderHamtning();
+    }, null);
 }
-//Renderfunktion kalender.
-let hamtningYear = idag.getFullYear();
-let hamtningMonth = idag.getMonth();
 
 function renderHamtning() {
-    document.getElementById("calendar-hamtning-title").textContent =
-        monthName(hamtningYear, hamtningMonth);
+    document.getElementById("calendar-hamtning-title").textContent = monthName(hamYear, hamMonth);
 
-    skapaKalender("calendar-hamtning", hamtningYear, hamtningMonth, iso => {
+    const minDate = lamning.value || null;
+
+    skapaKalender("calendar-hamtning", hamYear, hamMonth, iso => {
         hamtning.value = iso;
-    }, lamning.value);
+    }, minDate);
 }
 
-document.getElementById("calendar-hamtning-prev").onclick = () => {
-    hamtningMonth--;
-    if (hamtningMonth < 0) { hamtningMonth = 11; hamtningYear--; }
-    renderHamtning();
-};
-
-document.getElementById("calendar-hamtning-next").onclick = () => {
-    hamtningMonth++;
-    if (hamtningMonth > 11) { hamtningMonth = 0; hamtningYear++; }
-    renderHamtning();
-};
-
-
-// ===============================
-// 8. Starta båda kalendrarna
-// ===============================
 function startaKalendrar() {
-    initMonthNav("calendar-lamning", iso => lamning.value = iso, null);
-    initMonthNav("calendar-hamtning", iso => hamtning.value = iso, () => lamning.value);
+    // lämning
+    document.getElementById("calendar-lamning-prev").onclick = () => {
+        lamMonth--;
+        if (lamMonth < 0) { lamMonth = 11; lamYear--; }
+        renderLamning();
+    };
+    document.getElementById("calendar-lamning-next").onclick = () => {
+        lamMonth++;
+        if (lamMonth > 11) { lamMonth = 0; lamYear++; }
+        renderLamning();
+    };
+
+    // hämtning
+    document.getElementById("calendar-hamtning-prev").onclick = () => {
+        hamMonth--;
+        if (hamMonth < 0) { hamMonth = 11; hamYear--; }
+        renderHamtning();
+    };
+    document.getElementById("calendar-hamtning-next").onclick = () => {
+        hamMonth++;
+        if (hamMonth > 11) { hamMonth = 0; hamYear++; }
+        renderHamtning();
+    };
+
+    renderLamning();
+    renderHamtning();
 }
 
-
-
 // ===============================
-// 9. Rubrikväxling
+// 6. Rubrikväxling
 // ===============================
 const rubrikLamning = document.querySelector('#rubrik-lamning');
 const rubrikHamtning = document.querySelector('#rubrik-hamtning');
-const checkboxHamtning = document.querySelector('#checkbox-hamtning');
+const checkboxHamtning = document.querySelector('#checkbox-hamtning'); // lägg till denna i HTML om du vill
 
 function uppdateraRubriker() {
-    if (checkboxHamtning.checked) {
+    if (checkboxHamtning && checkboxHamtning.checked) {
         rubrikLamning.textContent = "Önskad upphämtning";
         rubrikHamtning.textContent = "Önskad återlämning";
     } else {
@@ -373,12 +339,13 @@ function uppdateraRubriker() {
     }
 }
 
-checkboxHamtning.addEventListener('change', uppdateraRubriker);
-uppdateraRubriker();
-
+if (checkboxHamtning) {
+    checkboxHamtning.addEventListener('change', uppdateraRubriker);
+    uppdateraRubriker();
+}
 
 // ===============================
-// 10. Däckbyte → balansering auto
+// 7. Däckbyte → balansering auto
 // ===============================
 const checkboxByte = document.querySelector('#checkbox-byte');
 const checkboxBalansering = document.querySelector('#checkbox-balansering');
@@ -387,6 +354,7 @@ checkboxByte.addEventListener('change', () => {
     if (checkboxByte.checked) checkboxBalansering.checked = true;
 });
 </script>
+
 
 
 </body>
