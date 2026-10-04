@@ -150,6 +150,7 @@
 <script>
 // Blockerade dagar (lägg in dina egna)
 const blockeradeDagar = [
+    "2026-10-04",
     "2026-10-05",
     "2026-10-06",
     "2026-10-07",
@@ -162,33 +163,32 @@ const blockeradeDagar = [
 const lamning = document.querySelector('input[name="lamning"]');
 const hamtning = document.querySelector('input[name="hamtning"]');
 
-// Lokal ISO-funktion (fixar -1-dag buggen)
-function toLocalISO(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+// Hjälpfunktion: bygg ISO-datumsträng utan Date-objekt
+function makeISO(year, monthIndexZeroBased, day) {
+    const y = year;
+    const m = String(monthIndexZeroBased + 1).padStart(2, "0");
+    const d = String(day).padStart(2, "0");
+    return `${y}-${m}-${d}`;
 }
 
-// Dagens datum (lokalt)
+// Dagens datum (för min-gräns i fält)
 const idag = new Date();
-const idagISO = toLocalISO(idag);
+const idagISO = `${idag.getFullYear()}-${String(idag.getMonth() + 1).padStart(2, "0")}-${String(idag.getDate()).padStart(2, "0")}`;
 
-// Blockera manuellt i input-fältet
+// Blockera manuellt i input-fälten
 lamning.setAttribute("min", idagISO);
 hamtning.setAttribute("min", idagISO);
 
 // Bygg kalender
-function skapaKalender(elementId, year, month, onSelect, minDate = null) {
+function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate = null) {
     const calendar = document.getElementById(elementId);
     calendar.innerHTML = "";
 
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
+    // Antal dagar i månaden
+    const lastDay = new Date(year, monthIndexZeroBased + 1, 0).getDate();
 
-    for (let d = 1; d <= lastDay.getDate(); d++) {
-        const date = new Date(year, month, d);
-        const iso = toLocalISO(date);
+    for (let d = 1; d <= lastDay; d++) {
+        const iso = makeISO(year, monthIndexZeroBased, d);
 
         const div = document.createElement("div");
         div.classList.add("calendar-day");
@@ -224,19 +224,21 @@ function skapaKalender(elementId, year, month, onSelect, minDate = null) {
     }
 }
 
-// Starta lämning
+// Starta med aktuell månad
 const year = idag.getFullYear();
-const month = idag.getMonth();
+const monthIndexZeroBased = idag.getMonth();
 
-skapaKalender("calendar-lamning", year, month, (iso) => {
+// Lämningskalender
+skapaKalender("calendar-lamning", year, monthIndexZeroBased, (iso) => {
     lamning.value = iso;
 
-    // När lämning är vald → bygg hämtning
-    skapaKalender("calendar-hamtning", year, month, (iso2) => {
+    // Hämtning byggs efter vald lämning
+    skapaKalender("calendar-hamtning", year, monthIndexZeroBased, (iso2) => {
         hamtning.value = iso2;
     }, iso);
 });
 </script>
+
 
 
 
