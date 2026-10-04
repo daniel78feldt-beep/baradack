@@ -149,6 +149,36 @@ section h2 {
 .calendar-container {
     margin-top: 20px;
 }
+.calendar-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.calendar-day,
+.calendar-empty {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.calendar-empty {
+    background: transparent;
+    border: none;
+}
+
+.calendar-day.blocked {
+    background: #ddd;
+    color: #888;
+    pointer-events: none;
+}
+
+.calendar-day.selected {
+    background: #007bff;
+    color: #fff;
+}
 
 #calendar-lamning, #calendar-hamtning {
     display: grid;
