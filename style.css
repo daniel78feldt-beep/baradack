@@ -150,11 +150,12 @@ section h2 {
     margin-top: 20px;
 }
 
-#calendar {
+#calendar-lamning, #calendar-hamtning {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 6px;
     max-width: 400px;
+    margin-bottom: 20px;
 }
 
 .calendar-day {
@@ -180,6 +181,7 @@ section h2 {
     background: #333;
     color: white;
 }
+
 
 /* Kontakt */
 .contact p {
