@@ -164,6 +164,8 @@
 let ledtid = 1;
 let blockeradeDagar = [];
 
+let hamtningLocked = true;
+
 const lamning = document.querySelector('input[name="lamning"]');
 const hamtning = document.querySelector('input[name="hamtning"]');
 
@@ -274,27 +276,54 @@ let hamYear = idag.getFullYear();
 let hamMonth = idag.getMonth();
 
 function renderLamning() {
-    document.getElementById("calendar-lamning-title").textContent = monthName(lamYear, lamMonth);
+    // Sätt månadstitel
+    document.getElementById("calendar-lamning-title").textContent =
+        monthName(lamYear, lamMonth);
 
+    // Rita lämningens kalender
     skapaKalender("calendar-lamning", lamYear, lamMonth, iso => {
+
+        // Spara valt datum
         lamning.value = iso;
 
+        // Lås upp hämtning
+        hamtningLocked = false;
+
+        // Flytta hämtningens kalender till samma månad som lämning
         const d = new Date(iso);
         hamYear = d.getFullYear();
         hamMonth = d.getMonth();
+
+        // Rita hämtningens kalender
         renderHamtning();
     }, null);
 }
 
-function renderHamtning() {
-    document.getElementById("calendar-hamtning-title").textContent = monthName(hamYear, hamMonth);
 
+function renderHamtning() {
+
+    // Om hämtning är låst → visa text och avbryt
+    if (hamtningLocked) {
+        document.getElementById("calendar-hamtning").innerHTML =
+            "<p style='opacity:0.6; padding:10px;'>Välj lämning först</p>";
+
+        document.getElementById("calendar-hamtning-title").textContent = "";
+        return;
+    }
+
+    // Sätt månadstitel
+    document.getElementById("calendar-hamtning-title").textContent =
+        monthName(hamYear, hamMonth);
+
+    // minDate = lämning + ledtid
     const minDate = lamning.value || null;
 
+    // Rita hämtningens kalender
     skapaKalender("calendar-hamtning", hamYear, hamMonth, iso => {
         hamtning.value = iso;
     }, minDate);
 }
+
 
 function startaKalendrar() {
     // lämning
@@ -311,15 +340,19 @@ function startaKalendrar() {
 
     // hämtning
     document.getElementById("calendar-hamtning-prev").onclick = () => {
-        hamMonth--;
-        if (hamMonth < 0) { hamMonth = 11; hamYear--; }
-        renderHamtning();
-    };
-    document.getElementById("calendar-hamtning-next").onclick = () => {
-        hamMonth++;
-        if (hamMonth > 11) { hamMonth = 0; hamYear++; }
-        renderHamtning();
-    };
+    if (hamtningLocked) return;
+    hamMonth--;
+    if (hamMonth < 0) { hamMonth = 11; hamYear--; }
+    renderHamtning();
+};
+
+document.getElementById("calendar-hamtning-next").onclick = () => {
+    if (hamtningLocked) return;
+    hamMonth++;
+    if (hamMonth > 11) { hamMonth = 0; hamYear++; }
+    renderHamtning();
+};
+
 
     renderLamning();
     renderHamtning();
