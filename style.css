@@ -13,6 +13,7 @@ body {
 }
 .logo {
     width: 260px;        /* öka storleken här */
+    filter: drop-shadow(0 0 12px rgba(0,0,0,0.45)); /* mjuk glow som smälter in */
     max-width: none;     /* tar bort begränsningen */
     margin-bottom: 1rem;
     display: block;
