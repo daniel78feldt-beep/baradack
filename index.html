@@ -121,11 +121,11 @@
     <label>Datum för hämtning</label>
     <input type="date" name="hamtning" required>
 <div class="calendar-container">
-    <h3>Välj lämning</h3>
-    <div id="calendar-lamning"></div>
+    <h3 id="rubrik-lamning">Välj lämning</h3>
+<div id="calendar-lamning"></div>
 
-    <h3>Välj hämtning</h3>
-    <div id="calendar-hamtning"></div>
+    <h3 id="rubrik-hamtning">Välj hämtning</h3>
+<div id="calendar-hamtning"></div>
 </div>
 
     <label>Meddelande</label>
@@ -148,6 +148,30 @@
     <p>© 2026 Bara Däck</p>
 </footer>
 <script>
+    // Hämta rubrikerna
+const rubrikLamning = document.querySelector('#rubrik-lamning');
+const rubrikHamtning = document.querySelector('#rubrik-hamtning');
+
+// Hämta checkboxen
+const checkboxHamtning = document.querySelector('input[value="hamtning"]');
+
+// Funktion som uppdaterar rubriker
+function uppdateraRubriker() {
+    if (checkboxHamtning.checked) {
+        rubrikLamning.textContent = "Önskad upphämtning";
+        rubrikHamtning.textContent = "Önskad återlämning";
+    } else {
+        rubrikLamning.textContent = "Välj lämning";
+        rubrikHamtning.textContent = "Välj hämtning";
+    }
+}
+
+// Kör funktionen när kunden klickar
+checkboxHamtning.addEventListener('change', uppdateraRubriker);
+
+// Kör en gång vid start
+uppdateraRubriker();
+
 // Blockerade dagar (lägg in dina egna)
 const blockeradeDagar = [
     "2026-10-04",
