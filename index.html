@@ -212,13 +212,15 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
     calendar.innerHTML = "";
 
     const firstDay = new Date(year, monthIndexZeroBased, 1);
-    const startWeekday = (firstDay.getDay() + 6) % 7; // måndag=0 ... söndag=6
+    const startWeekday = (firstDay.getDay() + 6) % 7; 
+    // Gör måndag = 0, tisdag = 1 ... söndag = 6
+
     const lastDay = new Date(year, monthIndexZeroBased + 1, 0).getDate();
 
     let weekRow = document.createElement("div");
     weekRow.classList.add("calendar-week");
 
-    // tomma rutor före dag 1
+    // Tomma rutor före dag 1
     for (let i = 0; i < startWeekday; i++) {
         const empty = document.createElement("div");
         empty.classList.add("calendar-empty");
@@ -231,7 +233,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
         div.classList.add("calendar-day");
         div.textContent = d;
 
-        // blockeringar
+        // Blockeringar
         if (iso <= idagISO) div.classList.add("blocked");
         if (blockeradeDagar.includes(iso)) div.classList.add("blocked");
 
@@ -249,7 +251,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
 
         weekRow.appendChild(div);
 
-        // ny rad efter söndag
+        // Ny rad efter söndag
         if ((startWeekday + d) % 7 === 6) {
             calendar.appendChild(weekRow);
             weekRow = document.createElement("div");
@@ -261,6 +263,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
         calendar.appendChild(weekRow);
     }
 }
+
 
 // ===============================
 // 5. Månadsväxling + lämning/hämtning
