@@ -151,7 +151,7 @@
 // ===============================
 // 1. LEDTID (hämtas från fil)
 // ===============================
-let ledtid = 1; // fallback
+let ledtid = 1; // fallback om filen inte laddas
 
 fetch('ledtid.json')
     .then(response => response.json())
@@ -202,12 +202,12 @@ hamtning.setAttribute("min", idagISO);
 // 5. Blockerade dagar (manuella)
 // ===============================
 const blockeradeDagar = [
+    // Lägg in dina manuella blockeringar här, t.ex:
     "2026-10-05",
     "2026-10-06",
     "2026-10-07",
     "2026-10-08",
-    "2026-10-09",
-    "2026-10-10"
+    "2026-10-09"
 ];
 
 
@@ -261,15 +261,20 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
 
 
 // ===============================
-// 7. Starta kalendern
+// 7. Starta kalendrarna
 // ===============================
-const year = idag.getFullYear();
-const monthIndexZeroBased = idag.getMonth();
+const startYear = idag.getFullYear();
+const startMonth = idag.getMonth();
 
-skapaKalender("calendar-lamning", year, monthIndexZeroBased, (iso) => {
+skapaKalender("calendar-lamning", startYear, startMonth, (iso) => {
     lamning.value = iso;
 
-    skapaKalender("calendar-hamtning", year, monthIndexZeroBased, (iso2) => {
+    // Hämtning ska alltid visa rätt månad utifrån vald lämning
+    const d = new Date(iso);
+    const y2 = d.getFullYear();
+    const m2 = d.getMonth();
+
+    skapaKalender("calendar-hamtning", y2, m2, (iso2) => {
         hamtning.value = iso2;
     }, iso);
 });
@@ -308,6 +313,7 @@ checkboxByte.addEventListener('change', () => {
     }
 });
 </script>
+
 
 
 
