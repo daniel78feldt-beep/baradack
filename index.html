@@ -82,9 +82,11 @@
 
     <label>Namn</label>
     <input type="text" name="namn" required>
-
+<label>Adress</label>
+<input type="text" name="adress" required>
     <label>Telefon</label>
     <input type="text" name="telefon" required>
+
 
     <label>E‑post</label>
     <input type="email" name="email" required>
@@ -99,7 +101,9 @@
     <select name="antal" required>
         <option value="1">1 däck</option>
         <option value="2">2 däck</option>
+        <option value="3">3 däck</option>
         <option value="4">4 däck</option>
+        <option value="5">5 eller fler</option>
     </select>
 
     <label>Vilka tjänster vill du boka?</label>
@@ -136,6 +140,38 @@
 <footer>
     <p>© 2026 Bara Däck</p>
 </footer>
+<script>
+const lamning = document.querySelector('input[name="lamning"]');
+const hamtning = document.querySelector('input[name="hamtning"]');
+
+hamtning.addEventListener('change', () => {
+    if (hamtning.value === lamning.value) {
+        alert("Hämtning kan inte vara samma dag som lämning.");
+        hamtning.value = "";
+    }
+});
+
+const blockeradeDagar = [
+    "2026-10-04",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09"
+];
+
+function blockeraDatum(input) {
+    input.addEventListener('change', () => {
+        if (blockeradeDagar.includes(input.value)) {
+            alert("Det datumet är inte tillgängligt.");
+            input.value = "";
+        }
+    });
+}
+
+blockeraDatum(lamning);
+blockeraDatum(hamtning);
+</script>
 
 </body>
 </html>
