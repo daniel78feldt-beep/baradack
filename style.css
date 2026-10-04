@@ -146,6 +146,40 @@ section h2 {
     box-shadow: 0 8px 18px rgba(15, 23, 42, 0.8);
     filter: brightness(1.05);
 }
+.calendar-container {
+    margin-top: 20px;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    max-width: 400px;
+}
+
+.calendar-day {
+    padding: 10px;
+    background: #f2f2f2;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.calendar-day:hover {
+    background: #ddd;
+}
+
+.calendar-day.blocked {
+    background: #ccc;
+    color: #777;
+    cursor: not-allowed;
+}
+
+.calendar-day.selected {
+    background: #333;
+    color: white;
+}
 
 /* Kontakt */
 .contact p {
