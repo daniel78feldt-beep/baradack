@@ -150,17 +150,20 @@
 <script>
 // Blockerade dagar
 const blockeradeDagar = [
-     "2026-10-04",
     "2026-10-05",
     "2026-10-06",
     "2026-10-07",
     "2026-10-08",
-    "2026-10-09"
+    "2026-10-09",
+    "2026-10-10"
 ];
 
 // Datumfält
 const lamning = document.querySelector('input[name="lamning"]');
 const hamtning = document.querySelector('input[name="hamtning"]');
+
+// Dagens datum (ISO)
+const idagISO = new Date().toISOString().split("T")[0];
 
 // Bygg kalender
 function skapaKalender(elementId, year, month, onSelect, minDate = null) {
@@ -178,12 +181,17 @@ function skapaKalender(elementId, year, month, onSelect, minDate = null) {
         div.classList.add("calendar-day");
         div.textContent = d;
 
-        // Blockera dagar
+        // Blockera historiska datum
+        if (iso < idagISO) {
+            div.classList.add("blocked");
+        }
+
+        // Blockera manuellt blockerade dagar
         if (blockeradeDagar.includes(iso)) {
             div.classList.add("blocked");
         }
 
-        // Blockera dagar före minDate (för hämtning)
+        // Blockera dagar före vald lämning (för hämtning)
         if (minDate && iso <= minDate) {
             div.classList.add("blocked");
         }
@@ -210,14 +218,11 @@ skapaKalender("calendar-lamning", idag.getFullYear(), idag.getMonth(), (iso) => 
 
     // När lämning är vald → bygg hämtning
     skapaKalender("calendar-hamtning", idag.getFullYear(), idag.getMonth(), (iso2) => {
-        if (iso2 === iso) {
-            alert("Hämtning kan inte vara samma dag som lämning.");
-            return;
-        }
         hamtning.value = iso2;
     }, iso);
 });
 </script>
+
 
 
 
