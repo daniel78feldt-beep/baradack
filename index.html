@@ -261,13 +261,21 @@ function initMonthNav(prefix, onSelect, minDateGetter) {
 
     function render() {
         document.getElementById(`${prefix}-title`).textContent = monthName(year, month);
+
         skapaKalender(prefix, year, month, iso => {
             onSelect(iso);
 
-            // Hämtning hoppar automatiskt till rätt månad
+            // Endast lämning ska trigga hämtningens startmånad
             if (prefix === "calendar-lamning") {
                 const d = new Date(iso);
-                initMonthNav("calendar-hamtning", iso2 => hamtning.value = iso2, () => iso);
+                const y2 = d.getFullYear();
+                const m2 = d.getMonth();
+
+                // Uppdatera hämtningens interna månadstillstånd
+                hamtningYear = y2;
+                hamtningMonth = m2;
+
+                renderHamtning(); // rendera hämtning direkt
             }
         }, minDateGetter ? minDateGetter() : null);
     }
@@ -286,6 +294,30 @@ function initMonthNav(prefix, onSelect, minDateGetter) {
 
     render();
 }
+//Renderfunktion kalender.
+let hamtningYear = idag.getFullYear();
+let hamtningMonth = idag.getMonth();
+
+function renderHamtning() {
+    document.getElementById("calendar-hamtning-title").textContent =
+        monthName(hamtningYear, hamtningMonth);
+
+    skapaKalender("calendar-hamtning", hamtningYear, hamtningMonth, iso => {
+        hamtning.value = iso;
+    }, lamning.value);
+}
+
+document.getElementById("calendar-hamtning-prev").onclick = () => {
+    hamtningMonth--;
+    if (hamtningMonth < 0) { hamtningMonth = 11; hamtningYear--; }
+    renderHamtning();
+};
+
+document.getElementById("calendar-hamtning-next").onclick = () => {
+    hamtningMonth++;
+    if (hamtningMonth > 11) { hamtningMonth = 0; hamtningYear++; }
+    renderHamtning();
+};
 
 
 // ===============================
