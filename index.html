@@ -42,7 +42,7 @@
     <ol>
         <li>Du skickar en beställning via bokningsformuläret och väljer om vi ska hämta hjulen eller om du lämnar dem själv</li>
 
-        <li>Vi bekräftar dag och tid för hämtning eller inlämning</li>
+        <li>Vi bekräftar dag och tid för hämtning eller in</li>
 
         <li>Vi tar emot hjulen enligt den tid vi kommit överens om</li>
 
@@ -52,7 +52,7 @@
 
         <li>Betalning sker i samband med att däcken återlämnas till dig</li>
 
-        <li>Hämtning eller utlämning sker enligt överenskommen tid</li>
+        <li>Hämtning eller ut sker enligt överenskommen tid</li>
     </ol>
 </section>
 
@@ -69,14 +69,14 @@
         <li>Däckbyte på fälg + balansering (4 däck) <span>600 kr</span></li>
         <li>Endast balansering <span>100 kr / däck</span></li>
         <li>Däcktvätt <span>100 kr</span></li>
-        <li>Hämtning & lämning av hjul inom Östergötland <span>500 kr</span></li>
-        <li>Drop‑off / egen lämning <span>0 kr</span></li>
+        <li>Hämtning &  av hjul inom Östergötland <span>500 kr</span></li>
+        <li>Drop‑off / egen  <span>0 kr</span></li>
     </ul>
 </section>
 
 <!-- BOOKING -->
 <section class="booking">
-    <h2>Boka lämning / hämtning</h2>
+    <h2>Boka  / hämtning</h2>
 
    <form action="https://formspree.io/f/xljgrzee" method="POST">
 
@@ -111,11 +111,11 @@
         <label><input type="checkbox" name="tjanster" value="byte"> Däckbyte på fälg</label>
         <label><input type="checkbox" name="tjanster" value="balansering"> Balansering</label>
         <label><input type="checkbox" name="tjanster" value="tvätt"> Däcktvätt</label>
-        <label><input type="checkbox" name="tjanster" value="hamtning"> Hämtning & lämning</label>
+        <label><input type="checkbox" name="tjanster" value="hamtning"> Hämtning & </label>
         <label><input type="checkbox" name="tjanster" value="dropoff"> Drop‑off</label>
     </div>
 
-    <label>Datum för lämning</label>
+    <label>Datum för </label>
     <input type="date" name="lamning" required>
 
     <label>Datum för hämtning</label>
@@ -261,6 +261,16 @@ skapaKalender("calendar-lamning", year, monthIndexZeroBased, (iso) => {
         hamtning.value = iso2;
     }, iso);
 });
+    const checkboxByte = document.querySelector('#checkbox-byte');
+const checkboxBalansering = document.querySelector('#checkbox-balansering');
+
+// När kunden väljer däckbyte → balansering aktiveras automatiskt
+checkboxByte.addEventListener('change', () => {
+    if (checkboxByte.checked) {
+        checkboxBalansering.checked = true;
+    }
+});
+
 </script>
 
 
