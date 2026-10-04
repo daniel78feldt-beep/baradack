@@ -148,33 +148,60 @@
     <p>© 2026 Bara Däck</p>
 </footer>
 <script>
-    // Hämta rubrikerna
-const rubrikLamning = document.querySelector('#rubrik-lamning');
-const rubrikHamtning = document.querySelector('#rubrik-hamtning');
+// ===============================
+// 1. LEDTID (hämtas från fil)
+// ===============================
+let ledtid = 1; // fallback
 
-// Hämta checkboxen
-const checkboxHamtning = document.querySelector('input[value="hamtning"]');
+fetch('ledtid.json')
+    .then(response => response.json())
+    .then(data => {
+        ledtid = Number(data.ledtid) || 1;
+    })
+    .catch(err => console.error("Kunde inte läsa ledtid.json", err));
 
-// Funktion som uppdaterar rubriker
-function uppdateraRubriker() {
-    if (checkboxHamtning.checked) {
-        rubrikLamning.textContent = "Önskad upphämtning";
-        rubrikHamtning.textContent = "Önskad återlämning";
-    } else {
-        rubrikLamning.textContent = "Välj lämning";
-        rubrikHamtning.textContent = "Välj hämtning";
-    }
+
+// ===============================
+// 2. Datumfält
+// ===============================
+const lamning = document.querySelector('input[name="lamning"]');
+const hamtning = document.querySelector('input[name="hamtning"]');
+
+
+// ===============================
+// 3. Hjälpfunktioner
+// ===============================
+function makeISO(year, monthIndexZeroBased, day) {
+    const y = year;
+    const m = String(monthIndexZeroBased + 1).padStart(2, "0");
+    const d = String(day).padStart(2, "0");
+    return `${y}-${m}-${d}`;
 }
 
-// Kör funktionen när kunden klickar
-checkboxHamtning.addEventListener('change', uppdateraRubriker);
+function addDays(isoDate, days) {
+    const [y, m, d] = isoDate.split('-').map(Number);
+    const date = new Date(y, m - 1, d + days);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
 
-// Kör en gång vid start
-uppdateraRubriker();
 
-// Blockerade dagar (lägg in dina egna)
+// ===============================
+// 4. Dagens datum
+// ===============================
+const idag = new Date();
+const idagISO = `${idag.getFullYear()}-${String(idag.getMonth() + 1).padStart(2, "0")}-${String(idag.getDate()).padStart(2, "0")}`;
+
+lamning.setAttribute("min", idagISO);
+hamtning.setAttribute("min", idagISO);
+
+
+// ===============================
+// 5. Blockerade dagar (manuella)
+// ===============================
 const blockeradeDagar = [
-    "2026-10-04",
     "2026-10-05",
     "2026-10-06",
     "2026-10-07",
@@ -183,32 +210,14 @@ const blockeradeDagar = [
     "2026-10-10"
 ];
 
-// Datumfält
-const lamning = document.querySelector('input[name="lamning"]');
-const hamtning = document.querySelector('input[name="hamtning"]');
 
-// Hjälpfunktion: bygg ISO-datumsträng utan Date-objekt
-function makeISO(year, monthIndexZeroBased, day) {
-    const y = year;
-    const m = String(monthIndexZeroBased + 1).padStart(2, "0");
-    const d = String(day).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-}
-
-// Dagens datum (för min-gräns i fält)
-const idag = new Date();
-const idagISO = `${idag.getFullYear()}-${String(idag.getMonth() + 1).padStart(2, "0")}-${String(idag.getDate()).padStart(2, "0")}`;
-
-// Blockera manuellt i input-fälten
-lamning.setAttribute("min", idagISO);
-hamtning.setAttribute("min", idagISO);
-
-// Bygg kalender
+// ===============================
+// 6. Kalenderbyggare
+// ===============================
 function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate = null) {
     const calendar = document.getElementById(elementId);
     calendar.innerHTML = "";
 
-    // Antal dagar i månaden
     const lastDay = new Date(year, monthIndexZeroBased + 1, 0).getDate();
 
     for (let d = 1; d <= lastDay; d++) {
@@ -218,26 +227,28 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
         div.classList.add("calendar-day");
         div.textContent = d;
 
-        // Blockera historiska datum
+        // Blockera historiska + dagens datum
         if (iso <= idagISO) {
             div.classList.add("blocked");
         }
 
-        // Blockera manuellt blockerade dagar
+        // Blockera manuella datum
         if (blockeradeDagar.includes(iso)) {
             div.classList.add("blocked");
         }
 
-        // Blockera dagar före vald lämning (för hämtning)
-        if (minDate && iso <= minDate) {
-            div.classList.add("blocked");
+        // Blockera baserat på ledtid (för hämtning)
+        if (minDate) {
+            const earliest = addDays(minDate, ledtid);
+            if (iso < earliest) {
+                div.classList.add("blocked");
+            }
         }
 
         // Klick
         div.addEventListener("click", () => {
             if (div.classList.contains("blocked")) return;
 
-            // Markera vald dag
             calendar.querySelectorAll(".calendar-day").forEach(el => el.classList.remove("selected"));
             div.classList.add("selected");
 
@@ -248,30 +259,56 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
     }
 }
 
-// Starta med aktuell månad
+
+// ===============================
+// 7. Starta kalendern
+// ===============================
 const year = idag.getFullYear();
 const monthIndexZeroBased = idag.getMonth();
 
-// Lämningskalender
 skapaKalender("calendar-lamning", year, monthIndexZeroBased, (iso) => {
     lamning.value = iso;
 
-    // Hämtning byggs efter vald lämning
     skapaKalender("calendar-hamtning", year, monthIndexZeroBased, (iso2) => {
         hamtning.value = iso2;
     }, iso);
 });
-    const checkboxByte = document.querySelector('#checkbox-byte');
+
+
+// ===============================
+// 8. Rubrikväxling vid Hämtning & Lämning
+// ===============================
+const rubrikLamning = document.querySelector('#rubrik-lamning');
+const rubrikHamtning = document.querySelector('#rubrik-hamtning');
+const checkboxHamtning = document.querySelector('#checkbox-hamtning');
+
+function uppdateraRubriker() {
+    if (checkboxHamtning.checked) {
+        rubrikLamning.textContent = "Önskad upphämtning";
+        rubrikHamtning.textContent = "Önskad återlämning";
+    } else {
+        rubrikLamning.textContent = "Välj lämning";
+        rubrikHamtning.textContent = "Välj hämtning";
+    }
+}
+
+checkboxHamtning.addEventListener('change', uppdateraRubriker);
+uppdateraRubriker();
+
+
+// ===============================
+// 9. Däckbyte → Balansering auto-aktiveras
+// ===============================
+const checkboxByte = document.querySelector('#checkbox-byte');
 const checkboxBalansering = document.querySelector('#checkbox-balansering');
 
-// När kunden väljer däckbyte → balansering aktiveras automatiskt
 checkboxByte.addEventListener('change', () => {
     if (checkboxByte.checked) {
         checkboxBalansering.checked = true;
     }
 });
-
 </script>
+
 
 
 
