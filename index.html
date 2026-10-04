@@ -349,8 +349,11 @@ document.getElementById("calendar-hamtning-next").onclick = () => {
 // ===============================
 // 8. Starta båda kalendrarna
 // ===============================
-initMonthNav("calendar-lamning", iso => lamning.value = iso, null);
-initMonthNav("calendar-hamtning", iso => hamtning.value = iso, () => lamning.value);
+function startaKalendrar() {
+    initMonthNav("calendar-lamning", iso => lamning.value = iso, null);
+    initMonthNav("calendar-hamtning", iso => hamtning.value = iso, () => lamning.value);
+}
+
 
 
 // ===============================
