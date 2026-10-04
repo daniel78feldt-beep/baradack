@@ -78,25 +78,53 @@
 <section class="booking">
     <h2>Boka lämning / hämtning</h2>
 
-    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-        <label>Namn</label>
-        <input type="text" name="namn" required>
+   <form action="https://formspree.io/f/xljgrzee" method="POST">
 
-        <label>Telefon</label>
-        <input type="text" name="telefon" required>
+    <label>Namn</label>
+    <input type="text" name="namn" required>
 
-        <label>Bilmodell</label>
-        <input type="text" name="bilmodell" required>
+    <label>Telefon</label>
+    <input type="text" name="telefon" required>
 
-        <label>Datum för lämning</label>
-        <input type="date" name="lamning" required>
+    <label>E‑post</label>
+    <input type="email" name="email" required>
 
-        <label>Datum för hämtning</label>
-        <input type="date" name="hamtning" required>
+    <label>Registreringsnummer</label>
+    <input type="text" name="regnr" placeholder="ABC123" required>
 
-        <button type="submit">Skicka bokning</button>
-    </form>
+    <label>Däckdimension</label>
+    <input type="text" name="dimension" placeholder="205/55R16" required>
+
+    <label>Antal däck</label>
+    <select name="antal" required>
+        <option value="1">1 däck</option>
+        <option value="2">2 däck</option>
+        <option value="4">4 däck</option>
+    </select>
+
+    <label>Vilka tjänster vill du boka?</label>
+    <div class="services">
+        <label><input type="checkbox" name="tjanster" value="byte"> Däckbyte på fälg</label>
+        <label><input type="checkbox" name="tjanster" value="balansering"> Balansering</label>
+        <label><input type="checkbox" name="tjanster" value="tvätt"> Däcktvätt</label>
+        <label><input type="checkbox" name="tjanster" value="hamtning"> Hämtning & lämning</label>
+        <label><input type="checkbox" name="tjanster" value="dropoff"> Drop‑off</label>
+    </div>
+
+    <label>Datum för lämning</label>
+    <input type="date" name="lamning" required>
+
+    <label>Datum för hämtning</label>
+    <input type="date" name="hamtning" required>
+
+    <label>Meddelande</label>
+    <textarea name="meddelande" rows="4"></textarea>
+
+    <button type="submit">Skicka bokning</button>
+</form>
+
 </section>
+
 
 <!-- CONTACT -->
 <section class="contact">
