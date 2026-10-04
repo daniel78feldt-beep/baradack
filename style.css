@@ -1,4 +1,6 @@
-/* Grundstil */
+/* ===========================
+   Grundstil
+   =========================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,41 +13,20 @@ body {
     color: #f5f5f5;
     line-height: 1.6;
 }
+
+/* ===========================
+   Logotyp
+   =========================== */
 .logo {
-    width: min(40vw, 320px);   /* skalar med fönstret, men har ett max */
-    height: auto;              /* behåller proportioner */
+    width: min(40vw, 320px);
+    height: auto;
     display: block;
-    margin: 0 auto 1rem auto;  /* centrerad */
+    margin: 0 auto 1rem auto;
 }
 
-
-.hero {
-    text-align: center;
-    padding: 3rem 1rem;
-}
-
-.tagline {
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
-    color: #ccc;
-}
-
-.selling-points {
-    list-style: none;
-    padding: 0;
-    margin: 0 auto;
-    max-width: 400px;
-    text-align: left;
-}
-
-.selling-points li {
-    margin: 0.4rem 0;
-    font-size: 1rem;
-    color: #ddd;
-}
-
-/* Hero */
+/* ===========================
+   Hero
+   =========================== */
 .hero {
     padding: 3rem 1.5rem;
     text-align: center;
@@ -65,7 +46,16 @@ body {
     color: #cbd2d9;
 }
 
-/* Sektioner */
+.tagline {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #ccc;
+}
+
+/* ===========================
+   Sektioner
+   =========================== */
 section {
     max-width: 900px;
     margin: 0 auto;
@@ -81,7 +71,9 @@ section h2 {
     color: #e5e7eb;
 }
 
-/* Prislista */
+/* ===========================
+   Prislista
+   =========================== */
 .prices ul {
     list-style: none;
 }
@@ -98,7 +90,9 @@ section h2 {
     border-bottom: none;
 }
 
-/* Bokningsformulär */
+/* ===========================
+   Bokningsformulär
+   =========================== */
 .booking form {
     display: grid;
     gap: 0.8rem;
@@ -112,7 +106,9 @@ section h2 {
     color: #9ca3af;
 }
 
-.booking input {
+.booking input,
+.booking select,
+.booking textarea {
     padding: 0.6rem 0.8rem;
     border-radius: 4px;
     border: 1px solid #374151;
@@ -120,13 +116,17 @@ section h2 {
     color: #f9fafb;
 }
 
-.booking input:focus {
+.booking input:focus,
+.booking select:focus,
+.booking textarea:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 1px #3b82f6;
 }
 
-/* Knapp */
+/* ===========================
+   Knapp
+   =========================== */
 .booking button {
     margin-top: 0.8rem;
     padding: 0.8rem 1rem;
@@ -146,9 +146,17 @@ section h2 {
     box-shadow: 0 8px 18px rgba(15, 23, 42, 0.8);
     filter: brightness(1.05);
 }
+
+/* ===========================
+   Kalender — container
+   =========================== */
 .calendar-container {
     margin-top: 20px;
 }
+
+/* ===========================
+   Kalender — veckor (mån–sön)
+   =========================== */
 .calendar-week {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -156,64 +164,63 @@ section h2 {
     margin-bottom: 4px;
 }
 
+/* ===========================
+   Kalender — dagar
+   =========================== */
 .calendar-day,
 .calendar-empty {
-    padding: 8px;
+    padding: 6px;
     text-align: center;
-    border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 0.9rem;
 }
 
+/* tom ruta */
 .calendar-empty {
     background: transparent;
     border: none;
 }
 
-.calendar-day.blocked {
-    background: #ddd;
-    color: #888;
-    pointer-events: none;
-}
-
-.calendar-day.selected {
-    background: #007bff;
-    color: #fff;
-}
-
-
+/* normal dag */
 .calendar-day {
-    padding: 10px;
-    background: #f2f2f2;
-    text-align: center;
-    border-radius: 6px;
+    background: #e5e7eb;
+    color: #000;
+    border: 1px solid #999;
     cursor: pointer;
     user-select: none;
-    color: #000;
 }
 
+/* hover */
 .calendar-day:hover {
-    background: #ddd;
+    background: #d1d5db;
 }
 
+/* blockerad */
 .calendar-day.blocked {
-    background: #ccc;
-    color: #777;
+    background: #555;
+    color: #aaa;
+    border-color: #444;
     cursor: not-allowed;
 }
 
+/* vald */
 .calendar-day.selected {
-    background: #333;
-    color: white;
+    background: #3b82f6;
+    color: #fff;
+    border-color: #2563eb;
 }
 
-
-/* Kontakt */
+/* ===========================
+   Kontakt
+   =========================== */
 .contact p {
     margin-bottom: 0.3rem;
     color: #d1d5db;
 }
 
-/* Footer */
+/* ===========================
+   Footer
+   =========================== */
 footer {
     text-align: center;
     padding: 1.5rem;
@@ -222,7 +229,9 @@ footer {
     border-top: 1px solid #111827;
 }
 
-/* Mobilanpassning */
+/* ===========================
+   Mobilanpassning
+   =========================== */
 @media (max-width: 640px) {
     .hero h1 {
         font-size: 2.2rem;
@@ -235,5 +244,11 @@ footer {
     .prices li {
         font-size: 0.95rem;
     }
+
+    .calendar-day {
+        padding: 4px;
+        font-size: 0.8rem;
+    }
 }
+
 
