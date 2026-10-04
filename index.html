@@ -148,7 +148,7 @@
     <p>© 2026 Bara Däck</p>
 </footer>
 <script>
-// Blockerade dagar
+// Blockerade dagar (lägg in dina egna)
 const blockeradeDagar = [
     "2026-10-05",
     "2026-10-06",
@@ -162,8 +162,21 @@ const blockeradeDagar = [
 const lamning = document.querySelector('input[name="lamning"]');
 const hamtning = document.querySelector('input[name="hamtning"]');
 
-// Dagens datum (ISO)
-const idagISO = new Date().toISOString().split("T")[0];
+// Lokal ISO-funktion (fixar -1-dag buggen)
+function toLocalISO(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+// Dagens datum (lokalt)
+const idag = new Date();
+const idagISO = toLocalISO(idag);
+
+// Blockera manuellt i input-fältet
+lamning.setAttribute("min", idagISO);
+hamtning.setAttribute("min", idagISO);
 
 // Bygg kalender
 function skapaKalender(elementId, year, month, onSelect, minDate = null) {
@@ -175,7 +188,7 @@ function skapaKalender(elementId, year, month, onSelect, minDate = null) {
 
     for (let d = 1; d <= lastDay.getDate(); d++) {
         const date = new Date(year, month, d);
-        const iso = date.toISOString().split("T")[0];
+        const iso = toLocalISO(date);
 
         const div = document.createElement("div");
         div.classList.add("calendar-day");
@@ -212,16 +225,19 @@ function skapaKalender(elementId, year, month, onSelect, minDate = null) {
 }
 
 // Starta lämning
-const idag = new Date();
-skapaKalender("calendar-lamning", idag.getFullYear(), idag.getMonth(), (iso) => {
+const year = idag.getFullYear();
+const month = idag.getMonth();
+
+skapaKalender("calendar-lamning", year, month, (iso) => {
     lamning.value = iso;
 
     // När lämning är vald → bygg hämtning
-    skapaKalender("calendar-hamtning", idag.getFullYear(), idag.getMonth(), (iso2) => {
+    skapaKalender("calendar-hamtning", year, month, (iso2) => {
         hamtning.value = iso2;
     }, iso);
 });
 </script>
+
 
 
 
