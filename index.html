@@ -195,7 +195,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
         div.textContent = d;
 
         // Blockera historiska datum
-        if (iso < idagISO) {
+        if (iso <= idagISO) {
             div.classList.add("blocked");
         }
 
