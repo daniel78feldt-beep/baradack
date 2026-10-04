@@ -12,14 +12,12 @@ body {
     line-height: 1.6;
 }
 .logo {
-    width: 260px;        /* öka storleken här */
-    filter: drop-shadow(0 0 12px rgba(0,0,0,0.45)); /* mjuk glow som smälter in */
-    max-width: none;     /* tar bort begränsningen */
-    margin-bottom: 1rem;
+    width: min(40vw, 320px);   /* skalar med fönstret, men har ett max */
+    height: auto;              /* behåller proportioner */
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 1rem auto;  /* centrerad */
 }
+
 
 .hero {
     text-align: center;
