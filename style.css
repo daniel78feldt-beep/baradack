@@ -12,12 +12,14 @@ body {
     line-height: 1.6;
 }
 .logo {
-    width: 220px;
+    width: 260px;        /* öka storleken här */
+    max-width: none;     /* tar bort begränsningen */
     margin-bottom: 1rem;
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
+
 .hero {
     text-align: center;
     padding: 3rem 1rem;
