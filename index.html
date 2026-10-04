@@ -162,11 +162,19 @@
 // 1. LEDTID (hämtas från fil)
 // ===============================
 let ledtid = 1;
+let blockeradeDagar = [];
 
-fetch('ledtid.json')
-    .then(r => r.json())
-    .then(data => ledtid = Number(data.ledtid) || 1)
-    .catch(() => console.warn("Kunde inte läsa ledtid.json"));
+Promise.all([
+    fetch('ledtid.json').then(r => r.json()).catch(() => ({ ledtid: 1 })),
+    fetch('blockerade.json').then(r => r.json()).catch(() => ({ blockerade: [] }))
+]).then(([ledtidData, blockeradeData]) => {
+
+    ledtid = Number(ledtidData.ledtid) || 1;
+    blockeradeDagar = blockeradeData.blockerade || [];
+
+    startaKalendrar(); // <-- SUPER VIKTIGT
+});
+
 
 
 // ===============================
@@ -205,21 +213,7 @@ lamning.min = idagISO;
 hamtning.min = idagISO;
 
 
-// ===============================
-// 5. Blockerade dagar
-// ===============================
-let blockeradeDagar = [];
 
-fetch('blockerade.json')
-    .then(r => r.json())
-    .then(data => {
-        blockeradeDagar = data.blockerade || [];
-        startaKalendrar(); // <-- RITA KALENDRARNA EFTER ATT FILEN ÄR LÄST
-    })
-    .catch(() => {
-        console.warn("Kunde inte läsa blockerade.json");
-        startaKalendrar(); // <-- Rita ändå
-    });
 
 
 
