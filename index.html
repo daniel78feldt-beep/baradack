@@ -120,6 +120,10 @@
 
     <label>Datum för hämtning</label>
     <input type="date" name="hamtning" required>
+<div class="calendar-container">
+    <h3>Välj datum</h3>
+    <div id="calendar"></div>
+</div>
 
     <label>Meddelande</label>
     <textarea name="meddelande" rows="4"></textarea>
@@ -141,16 +145,7 @@
     <p>© 2026 Bara Däck</p>
 </footer>
 <script>
-const lamning = document.querySelector('input[name="lamning"]');
-const hamtning = document.querySelector('input[name="hamtning"]');
-
-hamtning.addEventListener('change', () => {
-    if (hamtning.value === lamning.value) {
-        alert("Hämtning kan inte vara samma dag som lämning.");
-        hamtning.value = "";
-    }
-});
-
+// Blockerade dagar (lägg in dina egna)
 const blockeradeDagar = [
     "2026-10-04",
     "2026-10-05",
@@ -160,18 +155,60 @@ const blockeradeDagar = [
     "2026-10-09"
 ];
 
-function blockeraDatum(input) {
-    input.addEventListener('change', () => {
-        if (blockeradeDagar.includes(input.value)) {
-            alert("Det datumet är inte tillgängligt.");
-            input.value = "";
+// Datumfält
+const lamning = document.querySelector('input[name="lamning"]');
+const hamtning = document.querySelector('input[name="hamtning"]');
+
+// Förhindra samma dag
+hamtning.addEventListener('change', () => {
+    if (hamtning.value === lamning.value) {
+        alert("Hämtning kan inte vara samma dag som lämning.");
+        hamtning.value = "";
+    }
+});
+
+// Bygg kalender
+function skapaKalender(year, month) {
+    const calendar = document.getElementById("calendar");
+    calendar.innerHTML = "";
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+        const date = new Date(year, month, d);
+        const iso = date.toISOString().split("T")[0];
+
+        const div = document.createElement("div");
+        div.classList.add("calendar-day");
+        div.textContent = d;
+
+        // Blockera dagar
+        if (blockeradeDagar.includes(iso)) {
+            div.classList.add("blocked");
         }
-    });
+
+        // Klick på dag
+        div.addEventListener("click", () => {
+            if (div.classList.contains("blocked")) return;
+
+            // Markera vald dag
+            document.querySelectorAll(".calendar-day").forEach(el => el.classList.remove("selected"));
+            div.classList.add("selected");
+
+            // Sätt datum i rätt fält
+            lamning.value = iso;
+        });
+
+        calendar.appendChild(div);
+    }
 }
 
-blockeraDatum(lamning);
-blockeraDatum(hamtning);
+// Starta kalendern för aktuell månad
+const idag = new Date();
+skapaKalender(idag.getFullYear(), idag.getMonth());
 </script>
+
 
 </body>
 </html>
