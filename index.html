@@ -116,6 +116,7 @@
         <label><input type="checkbox" name="tjanster" value="tvätt"> Däcktvätt</label>
         <label><input type="checkbox" id="checkbox-hamtning" name="tjanster" value="hamtning"> Hämtning & Lämning</label>
         <label><input type="checkbox" name="tjanster" value="dropoff"> Drop‑off</label>
+        <label><input type="checkbox" id="checkbox-skyndsamt" name="skyndsamt"> Skyndsam hantering</label>
     </div>
 
     <label>Datum för </label>
@@ -172,6 +173,12 @@ let hamtningLocked = true;
 const lamning = document.querySelector('input[name="lamning"]');
 const hamtning = document.querySelector('input[name="hamtning"]');
 
+const checkboxHamtning = document.querySelector('#checkbox-hamtning');
+const checkboxSkyndsamt = document.querySelector('#checkbox-skyndsamt');
+
+const rubrikLamning = document.querySelector('#rubrik-lamning');
+const rubrikHamtning = document.querySelector('#rubrik-hamtning');
+
 const idag = new Date();
 const idagISO = makeISO(idag.getFullYear(), idag.getMonth(), idag.getDate());
 
@@ -193,6 +200,9 @@ function monthName(y, m0) {
     return `${names[m0]} ${y}`;
 }
 
+function getLedtid() {
+    return checkboxSkyndsamt.checked ? 1 : 7;
+}
 // ===============================
 // 3. Läs JSON (ledtid + blockerade)
 // ===============================
@@ -320,11 +330,12 @@ function renderHamtning() {
 
     // minDate = lämning + ledtid
     const minDate = lamning.value || null;
-
+    const customLedtid = getLedtid();
+    
     // Rita hämtningens kalender
     skapaKalender("calendar-hamtning", hamYear, hamMonth, iso => {
         hamtning.value = iso;
-    }, minDate);
+    }, minDate, customLedtid);
 }
 
 
@@ -364,9 +375,9 @@ document.getElementById("calendar-hamtning-next").onclick = () => {
 // ===============================
 // 6. Rubrikväxling
 // ===============================
-const rubrikLamning = document.querySelector('#rubrik-lamning');
-const rubrikHamtning = document.querySelector('#rubrik-hamtning');
-const checkboxHamtning = document.querySelector('#checkbox-hamtning'); // lägg till denna i HTML om du vill
+//const rubrikLamning = document.querySelector('#rubrik-lamning');
+//const rubrikHamtning = document.querySelector('#rubrik-hamtning');
+//const checkboxHamtning = document.querySelector('#checkbox-hamtning'); // lägg till denna i HTML om du vill
 
 function uppdateraRubriker() {
     if (checkboxHamtning && checkboxHamtning.checked) {
