@@ -222,7 +222,7 @@ Promise.all([
 // ===============================
 // 4. Riktig veckokalender (mån–sön)
 // ===============================
-function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate = null) {
+function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate = null, customLedtid = 1) {
     const calendar = document.getElementById(elementId);
     calendar.innerHTML = "";
 
@@ -253,7 +253,7 @@ function skapaKalender(elementId, year, monthIndexZeroBased, onSelect, minDate =
         if (blockeradeDagar.includes(iso)) div.classList.add("blocked");
 
         if (minDate) {
-            const earliest = addDays(minDate, ledtid);
+            const earliest = addDays(minDate, customLedtid);
             if (iso < earliest) div.classList.add("blocked");
         }
 
