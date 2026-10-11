@@ -408,39 +408,48 @@ checkboxByte.addEventListener('change', () => {
 // Formspree utan omdirigering
 // ===============================
 
-const bookingForm = document.getElementById("bookingForm");
+window.addEventListener("DOMContentLoaded", () => {
 
-bookingForm.addEventListener("submit", async function(e) {
+    const bookingForm = document.getElementById("bookingForm");
+    const bookingModal = document.getElementById("bookingSuccess");
+    const closeModalBtn = document.getElementById("closeModal");
 
-    e.preventDefault();
+    bookingForm.addEventListener("submit", async (e) => {
 
-    try {
+        e.preventDefault();
 
-        const response = await fetch(bookingForm.action, {
-            method: "POST",
-            body: new FormData(bookingForm),
-            headers: {
-                "Accept": "application/json"
+        try {
+
+            const response = await fetch(bookingForm.action, {
+                method: "POST",
+                body: new FormData(bookingForm),
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.ok) {
+
+                bookingForm.reset();
+                bookingModal.style.display = "flex";
+
+            } else {
+
+                alert("Kunde inte skicka bokningen.");
+
             }
-        });
 
-        if (response.ok) {
+        } catch {
 
-            bookingForm.reset();
-
-            document.getElementById("bookingSuccess").style.display = "flex";
-
-        } else {
-
-            alert("Kunde inte skicka bokningen.");
+            alert("Ett fel uppstod. Försök igen senare.");
 
         }
 
-    } catch {
+    });
 
-        alert("Ett fel uppstod. Försök igen senare.");
-
-    }
+    closeModalBtn.addEventListener("click", () => {
+        bookingModal.style.display = "none";
+    });
 
 });
 
