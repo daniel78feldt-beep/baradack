@@ -80,7 +80,9 @@
 <section class="booking">
     <h2>Kontaktformulär för ej bindande bokning</h2>
 
-   <form action="https://formspree.io/f/xljgrzee" method="POST">
+   <form id="bookingForm" 
+       action="https://formspree.io/f/xljgrzee" method="POST">
+       `
 
     <label>Namn</label>
     <input type="text" name="namn" required>
@@ -403,8 +405,73 @@ const checkboxBalansering = document.querySelector('#checkbox-balansering');
 checkboxByte.addEventListener('change', () => {
     if (checkboxByte.checked) checkboxBalansering.checked = true;
 });
-</script>
+// ===============================
+// Formspree utan omdirigering
+// ===============================
 
+const bookingForm = document.getElementById("bookingForm");
+
+bookingForm.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    try {
+
+        const response = await fetch(bookingForm.action, {
+            method: "POST",
+            body: new FormData(bookingForm),
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (response.ok) {
+
+            bookingForm.reset();
+
+            document.getElementById("bookingSuccess").style.display = "flex";
+
+        } else {
+
+            alert("Kunde inte skicka bokningen.");
+
+        }
+
+    } catch {
+
+        alert("Ett fel uppstod. Försök igen senare.");
+
+    }
+
+});
+
+document.getElementById("closeModal").addEventListener("click", function() {
+
+    document.getElementById("bookingSuccess").style.display = "none";
+
+});
+</script>
+<div id="bookingSuccess" class="modal">
+    <div class="modal-content">
+        <h2>✅ Förfrågan mottagen</h2>
+
+        <p>
+            Tack för att du kontaktat Bara Däck.
+        </p>
+
+        <p>
+            Din bokningsförfrågan har skickats till oss och vi återkommer så snart som möjligt med bekräftelse på tid och upplägg.
+        </p>
+
+        <p>
+            Bokningen är preliminär tills du fått vår bekräftelse via telefon eller e‑post.
+        </p>
+
+        <button id="closeModal" type="button">
+            STÄNG
+        </button>
+    </div>
+</div>
 
 
 </body>
