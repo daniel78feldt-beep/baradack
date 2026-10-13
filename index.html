@@ -149,7 +149,7 @@
 <div style="position:absolute; left:-9999px;">
     <label>Lämna detta fält tomt</label>
     <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
-</div
+</div>
     <button type="submit">Skicka bokning</button>
 </form>
 
@@ -411,23 +411,23 @@ checkboxByte.addEventListener('change', () => {
 // ===============================
 // Tidskontroll
 // ===============================
-    let formStartTime = Date.now();
+    
 
 window.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById("formTime").value = formStartTime;
+    
 
-    const bookingForm = document.getElementById("bookingForm");
+    
 // ===============================
 // Formspree utan omdirigering
 // ===============================
-
+let formStartTime = Date.now();
 window.addEventListener("DOMContentLoaded", () => {
 
     const bookingForm = document.getElementById("bookingForm");
     const bookingModal = document.getElementById("bookingSuccess");
     const closeModalBtn = document.getElementById("closeModal");
-
+    document.getElementById("formTime").value = formStartTime;
     bookingForm.addEventListener("submit", async (e) => {
 
         e.preventDefault();
