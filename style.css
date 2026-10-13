@@ -148,6 +148,22 @@ section h2 {
 }
 
 /* ===========================
+   Checkbox / tjänster — lägg till flex så label+checkbox hålls ihop
+   =========================== */
+.services {
+    display: flex;
+    flex-wrap: wrap; /* flera rader tillåts men varje label hålls ihop */
+    gap: 0.75rem;    /* avstånd mellan kryssrutorna */
+}
+
+.services label {
+    display: inline-flex;
+    align-items: center; /* centrerar checkbox och text vertikalt */
+    gap: 0.4rem;         /* avstånd mellan kryssruta och text */
+    white-space: nowrap; /* ser till att checkbox + text inte bryts */
+}
+
+/* ===========================
    Kalender — container
    =========================== */
 .calendar-container {
