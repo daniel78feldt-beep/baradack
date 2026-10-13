@@ -23,6 +23,7 @@
 
 
 
+
 <!-- WHY CHOOSE US -->
 <section class="why-us">
     <h2>Varför välja oss?</h2>
@@ -108,8 +109,8 @@
         <option value="4">4 däck</option>
         <option value="5">5 eller fler</option>
     </select>
-    <input type="hidden" name="formTime" id="formTime">
-    <label>Vilken eller vilka tjänster är av intresse?</label>
+
+    <label>Vilka tjänster vill du boka?</label>
     <div class="services">
         <label><input type="checkbox" id="checkbox-byte" name="tjanster" value="byte"> Däckbyte på fälg</label>
         <label><input type="checkbox" id="checkbox-balansering" name="tjanster" value="balansering"> Balansering</label>
@@ -145,11 +146,7 @@
 
     <label>Meddelande</label>
     <textarea name="meddelande" rows="4"></textarea>
-<!-- Honeypot -->
-<div style="position:absolute; left:-9999px;">
-    <label>Lämna detta fält tomt</label>
-    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
-</div>
+
     <button type="submit">Skicka bokning</button>
 </form>
 
@@ -503,5 +500,3 @@ document.getElementById("closeModal").addEventListener("click", function() {
 
 </body>
 </html>
-
-
