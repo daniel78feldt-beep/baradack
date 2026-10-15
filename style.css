@@ -28,11 +28,9 @@ img {
 }
 
 /* ===========================
-   Huvudmeny
+   Huvudmeny (vänster sidomeny för breda skärmar)
    =========================== */
 .main-nav {
-    position: sticky;
-    top: 0;
     z-index: 1000;
     background: rgba(5, 7, 10, 0.85);
     backdrop-filter: blur(10px);
@@ -77,6 +75,55 @@ img {
 .main-nav a:hover,
 .main-nav a:focus-visible {
     color: #7dd3fc;
+}
+
+/* ===========================
+   Layout: desktop sidebar behavior
+   =========================== */
+@media (min-width: 721px) {
+    .main-nav {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 240px;
+        border-right: 1px solid rgba(148, 163, 184, 0.08);
+        padding: 1rem 0 1rem 0;
+    }
+
+    .nav-inner {
+        max-width: 220px;
+        margin: 0 auto;
+        padding: 1rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        height: 100%;
+        gap: 1rem;
+    }
+
+    .main-nav ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .main-nav li {
+        width: 100%;
+    }
+
+    .main-nav a {
+        display: block;
+        padding: 0.5rem 0.6rem;
+        width: 100%;
+        border-radius: 8px;
+    }
+
+    body {
+        padding-left: 240px;
+    }
 }
 
 /* ===========================
@@ -199,6 +246,37 @@ section h3 {
 .services li,
 .prices li {
     margin-bottom: 0.45rem;
+}
+
+/* ===========================
+   Anpassade bullets: bullet till vänster, text centrerad
+   (gäller "Viktigaste fördelarna" och kort "Så fungerar det")
+   =========================== */
+.home-summary ul,
+.home-summary ol {
+    padding-left: 0;
+}
+
+.home-summary ul li,
+.home-summary ol li {
+    list-style: none;
+    position: relative;
+    padding-left: 2.6rem; /* plats för markör */
+    text-align: center;   /* centrera text */
+    padding-right: 1rem;
+    display: block;
+}
+
+.home-summary ul li::before,
+.home-summary ol li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7dd3fc;
+    font-size: 1.25rem;
+    line-height: 1;
 }
 
 /* ===========================
@@ -497,6 +575,19 @@ footer {
 
     .main-nav ul {
         justify-content: flex-start;
+        display: flex;
+        gap: 0.5rem 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .main-nav {
+        position: sticky;
+        top: 0;
+        width: 100%;
+    }
+
+    body {
+        padding-left: 0;
     }
 
     .hero {
