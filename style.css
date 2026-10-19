@@ -297,7 +297,11 @@ section h3 {
     border-bottom: 1px solid #111827;
     color: #e5e7eb;
 }
-
+.services li strong,
+.prices li strong {
+    min-width: 220px;
+    flex-shrink: 0;
+}
 .prices li:last-child,
 .services li:last-child {
     border-bottom: none;
