@@ -291,8 +291,8 @@ section h3 {
 .services li,
 .prices li {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    /* justify-content: space-between; */
+    gap: 2rem;
     padding: 0.85rem 0;
     border-bottom: 1px solid #111827;
     color: #e5e7eb;
