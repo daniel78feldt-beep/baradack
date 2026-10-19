@@ -249,7 +249,7 @@ section h3 {
 }
 
 /* ===========================
-   Anpassade bullets: bullet till vänster, text centrerad
+   Anpassade bullets: bullet till vänster
    (gäller "Viktigaste fördelarna" och kort "Så fungerar det")
    =========================== */
 .home-summary ul,
@@ -262,8 +262,8 @@ section h3 {
     list-style: none;
     position: relative;
     padding-left: 2.6rem; /* plats för markör */
-    text-align: center;   /* centrera text */
-    padding-right: 1rem;
+    text-align: left;   /* centrera text */
+    /*padding-right: 1rem;*/
     display: block;
 }
 
